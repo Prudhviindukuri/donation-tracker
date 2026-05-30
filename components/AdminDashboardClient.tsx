@@ -18,7 +18,7 @@ export default function AdminDashboardClient() {
   const fetchDonations = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/donations");
+      const response = await fetch("/api/donations", { cache: "no-store" });
       if (response.ok) {
         const data = await response.json();
         setDonations(data);

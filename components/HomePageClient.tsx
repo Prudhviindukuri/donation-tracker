@@ -16,7 +16,7 @@ export default function HomePageClient() {
 
   const fetchDonations = useCallback(async () => {
     try {
-      const response = await fetch("/api/donations");
+      const response = await fetch("/api/donations", { cache: "no-store" });
       if (response.ok) {
         const data = await response.json();
         setDonations(data);
