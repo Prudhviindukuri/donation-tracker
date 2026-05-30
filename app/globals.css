@@ -3,25 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --saffron: #b85c00;
+  --ivory: #fdf6ec;
+  --card-border: #e8d5b7;
+  --text: #2c1810;
+  --gold: #d4a017;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--ivory);
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-card-border bg-white p-6 shadow-sm;
+  }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .font-heading {
+    font-family: var(--font-heading), Georgia, serif;
+  }
+
+  .font-telugu {
+    font-family: var(--font-telugu), "Noto Sans Telugu", sans-serif;
   }
 }

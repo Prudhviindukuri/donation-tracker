@@ -9,8 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        saffron: "#B85C00",
+        ivory: "#FDF6EC",
+        "card-border": "#E8D5B7",
+        text: "#2C1810",
+        gold: "#D4A017",
+      },
+      fontFamily: {
+        heading: ["var(--font-heading)", "Georgia", "serif"],
+        telugu: ["var(--font-telugu)", "Noto Sans Telugu", "sans-serif"],
       },
     },
   },
