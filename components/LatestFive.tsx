@@ -5,6 +5,7 @@ import {
   Donation,
   formatAmount,
   formatDate,
+  formatPaymentMode,
 } from "@/lib/translations";
 
 interface LatestFiveProps {
@@ -14,6 +15,7 @@ interface LatestFiveProps {
 export default function LatestFive({ donations }: LatestFiveProps) {
   const { t, lang } = useLanguage();
   const latest = donations.slice(0, 5);
+  const thClass = `pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`;
 
   return (
     <section className="card">
@@ -31,17 +33,15 @@ export default function LatestFive({ donations }: LatestFiveProps) {
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[320px] text-left text-sm">
+          <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-card-border text-text/70">
-                <th className={`pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`}>
-                  {t("donorName")}
-                </th>
-                <th className={`pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`}>
-                  {t("amount")}
-                </th>
+                <th className={thClass}>{t("donorName")}</th>
+                <th className={thClass}>{t("fatherName")}</th>
+                <th className={thClass}>{t("amount")}</th>
+                <th className={thClass}>{t("date")}</th>
                 <th className={`pb-3 font-medium ${lang === "te" ? "font-telugu" : ""}`}>
-                  {t("date")}
+                  {t("paymentMode")}
                 </th>
               </tr>
             </thead>
@@ -58,11 +58,17 @@ export default function LatestFive({ donations }: LatestFiveProps) {
                   <td className="py-3 pr-4 font-medium text-text">
                     {donation.name}
                   </td>
+                  <td className="py-3 pr-4 text-text/80">
+                    {donation.fatherName || "—"}
+                  </td>
                   <td className="py-3 pr-4 font-semibold text-saffron">
                     {formatAmount(donation.amount)}
                   </td>
+                  <td className="py-3 pr-4 text-text/80">
+                    {formatDate(donation.donationDate)}
+                  </td>
                   <td className="py-3 text-text/80">
-                    {formatDate(donation.createdAt)}
+                    {formatPaymentMode(donation.paymentMode, lang)}
                   </td>
                 </tr>
               ))}

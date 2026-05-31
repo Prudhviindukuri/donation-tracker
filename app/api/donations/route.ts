@@ -7,7 +7,7 @@ export const revalidate = 0;
 export async function GET() {
   try {
     const donations = await prisma.donation.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { donationDate: "desc" },
     });
 
     return NextResponse.json(donations, {

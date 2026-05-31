@@ -2,17 +2,28 @@
 
 import { FormEvent, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { PaymentMode, todayInputDate } from "@/lib/translations";
 
 interface AdminFormProps {
   onSuccess: () => void;
 }
 
+const inputClassName =
+  "w-full rounded-lg border border-card-border bg-ivory px-4 py-2 text-text outline-none focus:border-saffron";
+
 export default function AdminForm({ onSuccess }: AdminFormProps) {
   const { t, lang } = useLanguage();
   const [name, setName] = useState("");
+  const [fatherName, setFatherName] = useState("");
   const [amount, setAmount] = useState("");
+  const [donationDate, setDonationDate] = useState(todayInputDate());
+  const [paymentMode, setPaymentMode] = useState<PaymentMode>("CASH");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const labelClass = `mb-1 block text-sm font-medium text-text ${
+    lang === "te" ? "font-telugu" : ""
+  }`;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -31,13 +42,24 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
       return;
     }
 
+    if (!donationDate) {
+      setError(t("dateRequired"));
+      return;
+    }
+
     setLoading(true);
 
     try {
       const response = await fetch("/api/admin/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: trimmedName, amount: parsedAmount }),
+        body: JSON.stringify({
+          name: trimmedName,
+          fatherName: fatherName.trim(),
+          amount: parsedAmount,
+          donationDate,
+          paymentMode,
+        }),
       });
 
       if (!response.ok) {
@@ -46,7 +68,10 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
       }
 
       setName("");
+      setFatherName("");
       setAmount("");
+      setDonationDate(todayInputDate());
+      setPaymentMode("CASH");
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add donation");
@@ -65,42 +90,77 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
         {t("addDonation")}
       </h2>
 
-      <div>
-        <label
-          htmlFor="donor-name"
-          className={`mb-1 block text-sm font-medium text-text ${
-            lang === "te" ? "font-telugu" : ""
-          }`}
-        >
-          {t("donorName")}
-        </label>
-        <input
-          id="donor-name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-lg border border-card-border bg-ivory px-4 py-2 text-text outline-none focus:border-saffron"
-        />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="donor-name" className={labelClass}>
+            {t("donorName")}
+          </label>
+          <input
+            id="donor-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="father-name" className={labelClass}>
+            {t("fatherName")}
+          </label>
+          <input
+            id="father-name"
+            type="text"
+            value={fatherName}
+            onChange={(e) => setFatherName(e.target.value)}
+            className={inputClassName}
+          />
+        </div>
       </div>
 
-      <div>
-        <label
-          htmlFor="donor-amount"
-          className={`mb-1 block text-sm font-medium text-text ${
-            lang === "te" ? "font-telugu" : ""
-          }`}
-        >
-          {t("amount")} (₹)
-        </label>
-        <input
-          id="donor-amount"
-          type="number"
-          min="1"
-          step="1"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full rounded-lg border border-card-border bg-ivory px-4 py-2 text-text outline-none focus:border-saffron"
-        />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div>
+          <label htmlFor="donor-amount" className={labelClass}>
+            {t("amount")} (₹)
+          </label>
+          <input
+            id="donor-amount"
+            type="number"
+            min="1"
+            step="1"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="donation-date" className={labelClass}>
+            {t("date")}
+          </label>
+          <input
+            id="donation-date"
+            type="date"
+            value={donationDate}
+            onChange={(e) => setDonationDate(e.target.value)}
+            className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="payment-mode" className={labelClass}>
+            {t("paymentMode")}
+          </label>
+          <select
+            id="payment-mode"
+            value={paymentMode}
+            onChange={(e) => setPaymentMode(e.target.value as PaymentMode)}
+            className={inputClassName}
+          >
+            <option value="CASH">{t("cash")}</option>
+            <option value="ONLINE">{t("online")}</option>
+          </select>
+        </div>
       </div>
 
       {error && (

@@ -2,18 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { signOut } from "next-auth/react";
+import AdminEditModal from "@/components/AdminEditModal";
 import AdminForm from "@/components/AdminForm";
 import { useLanguage } from "@/components/LanguageProvider";
 import {
   Donation,
   formatAmount,
   formatDate,
+  formatPaymentMode,
 } from "@/lib/translations";
 
 export default function AdminDashboardClient() {
   const { t, lang } = useLanguage();
   const [donations, setDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingDonation, setEditingDonation] = useState<Donation | null>(null);
 
   const fetchDonations = useCallback(async () => {
     setLoading(true);
@@ -103,13 +106,15 @@ export default function AdminDashboardClient() {
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[480px] text-left text-sm">
+              <table className="w-full min-w-[880px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-card-border text-text/70">
                     <th className="pb-3 pr-4 font-medium">{t("donorName")}</th>
+                    <th className="pb-3 pr-4 font-medium">{t("fatherName")}</th>
                     <th className="pb-3 pr-4 font-medium">{t("amount")}</th>
                     <th className="pb-3 pr-4 font-medium">{t("date")}</th>
-                    <th className="pb-3 font-medium">{t("delete")}</th>
+                    <th className="pb-3 pr-4 font-medium">{t("paymentMode")}</th>
+                    <th className="pb-3 font-medium">{t("actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -121,20 +126,35 @@ export default function AdminDashboardClient() {
                       <td className="py-3 pr-4 font-medium text-text">
                         {donation.name}
                       </td>
+                      <td className="py-3 pr-4 text-text/80">
+                        {donation.fatherName || "—"}
+                      </td>
                       <td className="py-3 pr-4 font-semibold text-saffron">
                         {formatAmount(donation.amount)}
                       </td>
                       <td className="py-3 pr-4 text-text/80">
-                        {formatDate(donation.createdAt)}
+                        {formatDate(donation.donationDate)}
+                      </td>
+                      <td className="py-3 pr-4 text-text/80">
+                        {formatPaymentMode(donation.paymentMode, lang)}
                       </td>
                       <td className="py-3">
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(donation.id)}
-                          className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-700 transition-colors hover:bg-red-50"
-                        >
-                          {t("delete")}
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setEditingDonation(donation)}
+                            className="rounded-lg border border-card-border px-3 py-1.5 text-sm text-text transition-colors hover:bg-ivory"
+                          >
+                            {t("edit")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(donation.id)}
+                            className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-700 transition-colors hover:bg-red-50"
+                          >
+                            {t("delete")}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -144,6 +164,14 @@ export default function AdminDashboardClient() {
           )}
         </section>
       </main>
+
+      {editingDonation && (
+        <AdminEditModal
+          donation={editingDonation}
+          onClose={() => setEditingDonation(null)}
+          onSuccess={fetchDonations}
+        />
+      )}
     </div>
   );
 }

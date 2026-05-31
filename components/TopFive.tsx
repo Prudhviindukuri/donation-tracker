@@ -75,7 +75,12 @@ export default function TopFive({ donations }: TopFiveProps) {
                       </span>
                     </td>
                     <td className="py-3 pr-4 font-medium text-text">
-                      {donation.name}
+                      <div>{donation.name}</div>
+                      {donation.fatherName && (
+                        <div className="text-xs text-text/60">
+                          {donation.fatherName}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3 font-semibold text-saffron">
                       {formatAmount(donation.amount)}

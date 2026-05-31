@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request) {
+export async function PUT(request: Request) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -15,22 +15,28 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const parsed = parseDonationPayload(body);
+    const id = Number(body.id);
 
+    if (!Number.isInteger(id) || id <= 0) {
+      return NextResponse.json({ error: "Invalid donation id" }, { status: 400 });
+    }
+
+    const parsed = parseDonationPayload(body);
     if ("error" in parsed) {
       return NextResponse.json({ error: parsed.error }, { status: 400 });
     }
 
-    const donation = await prisma.donation.create({
+    const donation = await prisma.donation.update({
+      where: { id },
       data: parsed.data,
     });
 
-    return NextResponse.json(donation, { status: 201 });
+    return NextResponse.json(donation);
   } catch (error) {
-    console.error("Failed to add donation:", error);
+    console.error("Failed to update donation:", error);
     return NextResponse.json(
-      { error: "Failed to add donation" },
-      { status: 500 }
+      { error: "Failed to update donation" },
+      { status: 404 }
     );
   }
 }
