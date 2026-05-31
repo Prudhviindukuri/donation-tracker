@@ -14,7 +14,7 @@ export default function Logo({
   return (
     <Image
       src="/logo.png"
-      alt="Om symbol — Hindu Graveyard Construction"
+      alt="Shiva emblem — Hindu Graveyard Construction"
       width={size}
       height={size}
       priority={priority}

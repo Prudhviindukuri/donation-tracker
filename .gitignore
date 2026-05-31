@@ -27,6 +27,7 @@ yarn-error.log*
 
 # npm cache
 .npm-cache
+.pydeps
 
 # local env files
 .env
