@@ -16,6 +16,48 @@ interface DonationTableProps {
 const PAGE_SIZE = 20;
 
 type SortOption = "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
+type AmountBucket =
+  | "all"
+  | "under10k"
+  | "10to25k"
+  | "25to50k"
+  | "50to1L"
+  | "1Lplus";
+
+const AMOUNT_BUCKETS: {
+  id: AmountBucket;
+  labelKey:
+    | "filterAll"
+    | "bucketUnder10k"
+    | "bucket10to25k"
+    | "bucket25to50k"
+    | "bucket50to1L"
+    | "bucket1Lplus";
+}[] = [
+  { id: "all", labelKey: "filterAll" },
+  { id: "under10k", labelKey: "bucketUnder10k" },
+  { id: "10to25k", labelKey: "bucket10to25k" },
+  { id: "25to50k", labelKey: "bucket25to50k" },
+  { id: "50to1L", labelKey: "bucket50to1L" },
+  { id: "1Lplus", labelKey: "bucket1Lplus" },
+];
+
+function matchesAmountBucket(amount: number, bucket: AmountBucket): boolean {
+  switch (bucket) {
+    case "all":
+      return true;
+    case "under10k":
+      return amount < 10_000;
+    case "10to25k":
+      return amount >= 10_000 && amount < 25_000;
+    case "25to50k":
+      return amount >= 25_000 && amount < 50_000;
+    case "50to1L":
+      return amount >= 50_000 && amount < 100_000;
+    case "1Lplus":
+      return amount >= 100_000;
+  }
+}
 
 function SortableHeader({
   label,
@@ -51,19 +93,22 @@ export default function DonationTable({ donations }: DonationTableProps) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortOption>("date-desc");
+  const [amountBucket, setAmountBucket] = useState<AmountBucket>("all");
 
   const sortField = sort.startsWith("date") ? "date" : "amount";
   const sortDir = sort.endsWith("asc") ? "asc" : "desc";
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
-    if (!query) return donations;
-    return donations.filter(
-      (donation) =>
+    return donations.filter((donation) => {
+      const matchesSearch =
+        !query ||
         donation.name.toLowerCase().includes(query) ||
-        donation.fatherName.toLowerCase().includes(query)
-    );
-  }, [donations, search]);
+        donation.fatherName.toLowerCase().includes(query);
+      const matchesBucket = matchesAmountBucket(donation.amount, amountBucket);
+      return matchesSearch && matchesBucket;
+    });
+  }, [donations, search, amountBucket]);
 
   const sorted = useMemo(() => {
     const list = [...filtered];
@@ -93,6 +138,11 @@ export default function DonationTable({ donations }: DonationTableProps) {
 
   const handleSortChange = (value: SortOption) => {
     setSort(value);
+    setPage(1);
+  };
+
+  const handleBucketChange = (bucket: AmountBucket) => {
+    setAmountBucket(bucket);
     setPage(1);
   };
 
@@ -146,6 +196,24 @@ export default function DonationTable({ donations }: DonationTableProps) {
             <option value="amount-desc">{t("amountHigh")}</option>
             <option value="amount-asc">{t("amountLow")}</option>
           </select>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {AMOUNT_BUCKETS.map(({ id, labelKey }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => handleBucketChange(id)}
+              className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+                amountBucket === id
+                  ? "border-saffron bg-saffron text-white"
+                  : "border-card-border bg-white text-text hover:bg-ivory"
+              } ${lang === "te" && id === "all" ? "font-telugu" : ""}`}
+              aria-pressed={amountBucket === id}
+            >
+              {t(labelKey)}
+            </button>
+          ))}
         </div>
       </div>
 
