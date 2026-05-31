@@ -4,8 +4,8 @@ export const translations = {
   en: {
     siteTitle: "Hindu Graveyard Construction",
     subtitle: "Donation Registry",
-    heroTitleEn: "Hindu Graveyard Construction — Donation Registry",
-    heroTitleTe: "హిందూ స్మశానవాటిక నిర్మాణం — విరాళాల నమోదు",
+    heroTitleEn: "Maha Prasthanam : Pippara — Hindu Graveyard Construction — Donations",
+    heroTitleTe: "మహాప్రస్థనం : పిప్పర — హిందూ స్మశానవాటిక నిర్మాణం — విరాళాలు",
     totalRaised: "Total Amount Raised",
     latestDonations: "Recent Donations",
     topDonors: "Top Donors",
