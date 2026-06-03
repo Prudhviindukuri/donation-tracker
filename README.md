@@ -41,6 +41,9 @@ Or copy the line from `.env.local` into `.env`.
 | `NEXTAUTH_URL` | `http://localhost:3000` (or your production URL) |
 | `ADMIN_USERNAME` | Admin login username (default: `admin`) |
 | `ADMIN_PASSWORD` | Admin login password |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret |
 
 ### 3. Create Neon database
 
@@ -48,13 +51,20 @@ Or copy the line from `.env.local` into `.env`.
 2. Create a new project and database
 3. Copy the connection string into `DATABASE_URL` in `.env.local`
 
-### 4. Run database migration
+### 4. Cloudinary (progress photo gallery)
+
+1. Create a free account at [cloudinary.com](https://cloudinary.com)
+2. Copy Cloud Name, API Key, and API Secret from the dashboard
+3. Add them to `.env.local` and `.env` (for local uploads)
+
+### 5. Run database migration
 
 ```bash
 npx prisma migrate dev --name init
+npx prisma migrate dev --name add_progress_images
 ```
 
-### 5. Start development server
+### 6. Start development server
 
 ```bash
 npm run dev

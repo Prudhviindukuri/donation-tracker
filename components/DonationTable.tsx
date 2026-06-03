@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { getPublicAliasDisplay } from "@/lib/donation";
 import {
   Donation,
   formatAmount,
@@ -104,6 +105,7 @@ export default function DonationTable({ donations }: DonationTableProps) {
       const matchesSearch =
         !query ||
         donation.name.toLowerCase().includes(query) ||
+        donation.aliasName.toLowerCase().includes(query) ||
         donation.fatherName.toLowerCase().includes(query);
       const matchesBucket = matchesAmountBucket(donation.amount, amountBucket);
       return matchesSearch && matchesBucket;
@@ -224,11 +226,12 @@ export default function DonationTable({ donations }: DonationTableProps) {
       ) : (
         <>
           <div className="max-h-[480px] overflow-auto rounded-lg border border-card-border/60">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[840px] text-left text-sm">
               <thead className="sticky top-0 bg-white">
                 <tr className="border-b border-card-border text-text/70">
                   <th className={`${thClass} font-medium`}>{t("serialNo")}</th>
                   <th className={`${thClass} font-medium`}>{t("donorName")}</th>
+                  <th className={`${thClass} font-medium`}>{t("aliasName")}</th>
                   <th className={`${thClass} font-medium`}>{t("fatherName")}</th>
                   <SortableHeader
                     label={t("amount")}
@@ -258,6 +261,9 @@ export default function DonationTable({ donations }: DonationTableProps) {
                     </td>
                     <td className="px-4 py-3 font-medium text-text">
                       {donation.name}
+                    </td>
+                    <td className="px-4 py-3 text-text/80">
+                      {getPublicAliasDisplay(donation)}
                     </td>
                     <td className="px-4 py-3 text-text/80">
                       {donation.fatherName || "—"}

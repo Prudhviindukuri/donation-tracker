@@ -3,10 +3,10 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
 import { toInputDate } from "@/lib/donation";
-import { Donation, PaymentMode } from "@/lib/translations";
+import { AdminDonation, PaymentMode } from "@/lib/translations";
 
 interface AdminEditModalProps {
-  donation: Donation;
+  donation: AdminDonation;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -21,7 +21,9 @@ export default function AdminEditModal({
 }: AdminEditModalProps) {
   const { t, lang } = useLanguage();
   const [name, setName] = useState(donation.name);
+  const [aliasName, setAliasName] = useState(donation.aliasName);
   const [fatherName, setFatherName] = useState(donation.fatherName);
+  const [notes, setNotes] = useState(donation.notes);
   const [amount, setAmount] = useState(String(donation.amount));
   const [donationDate, setDonationDate] = useState(
     toInputDate(donation.donationDate)
@@ -34,7 +36,9 @@ export default function AdminEditModal({
 
   useEffect(() => {
     setName(donation.name);
+    setAliasName(donation.aliasName);
     setFatherName(donation.fatherName);
+    setNotes(donation.notes);
     setAmount(String(donation.amount));
     setDonationDate(toInputDate(donation.donationDate));
     setPaymentMode(donation.paymentMode);
@@ -76,7 +80,9 @@ export default function AdminEditModal({
         body: JSON.stringify({
           id: donation.id,
           name: trimmedName,
+          aliasName: aliasName.trim(),
           fatherName: fatherName.trim(),
+          notes: notes.trim(),
           amount: parsedAmount,
           donationDate,
           paymentMode,
@@ -129,6 +135,19 @@ export default function AdminEditModal({
           </div>
 
           <div>
+            <label htmlFor="edit-alias-name" className={labelClass}>
+              {t("aliasName")}
+            </label>
+            <input
+              id="edit-alias-name"
+              type="text"
+              value={aliasName}
+              onChange={(e) => setAliasName(e.target.value)}
+              className={inputClassName}
+            />
+          </div>
+
+          <div>
             <label htmlFor="edit-father-name" className={labelClass}>
               {t("fatherName")}
             </label>
@@ -137,6 +156,20 @@ export default function AdminEditModal({
               type="text"
               value={fatherName}
               onChange={(e) => setFatherName(e.target.value)}
+              className={inputClassName}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="edit-notes" className={labelClass}>
+              {t("notes")}
+            </label>
+            <textarea
+              id="edit-notes"
+              rows={3}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder={t("notesPlaceholder")}
               className={inputClassName}
             />
           </div>

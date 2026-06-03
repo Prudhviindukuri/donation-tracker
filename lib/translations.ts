@@ -12,6 +12,9 @@ export const translations = {
     topDonors: "Top Donors",
     allDonations: "All Donations",
     donorName: "Donor Name",
+    aliasName: "Alias Name",
+    notes: "Notes",
+    notesPlaceholder: "Internal notes (admin only)",
     fatherName: "Father's Name",
     amount: "Amount",
     date: "Date",
@@ -19,7 +22,7 @@ export const translations = {
     cash: "Cash",
     online: "Online",
     rank: "Rank",
-    search: "Search by name...",
+    search: "Search by name, alias, or father's name...",
     sortBy: "Sort by",
     dateNewest: "Date (newest first)",
     dateOldest: "Date (oldest first)",
@@ -60,6 +63,22 @@ export const translations = {
     next: "Next",
     page: "Page",
     of: "of",
+    progressTitle: "Construction Progress",
+    noPhotos: "No progress photos yet",
+    uploadPhoto: "Upload Progress Photo",
+    photoTitleEn: "Title (English)",
+    photoTitleTe: "Title (Telugu)",
+    chooseImage: "Choose Image",
+    uploading: "Uploading...",
+    uploadSuccess: "Photo uploaded successfully!",
+    deleteConfirm: "Are you sure you want to delete this photo?",
+    viewGallery: "View Gallery",
+    titleRequired: "Title is required",
+    imageRequired: "Please choose an image",
+    uploadFailed: "Failed to upload photo",
+    close: "Close",
+    previousPhoto: "Previous",
+    nextPhoto: "Next",
   },
   te: {
     siteTitle: "హిందూ స్మశానవాటిక నిర్మాణం",
@@ -71,6 +90,9 @@ export const translations = {
     topDonors: "అగ్రశ్రేణి దాతలు",
     allDonations: "అన్ని విరాళాలు",
     donorName: "దాత పేరు",
+    aliasName: "మారుపేరు",
+    notes: "గమనికలు",
+    notesPlaceholder: "అంతర్గత గమనికలు (అడ్మిన్ మాత్రమే)",
     fatherName: "తండ్రి పేరు",
     amount: "మొత్తం",
     date: "తేదీ",
@@ -78,7 +100,7 @@ export const translations = {
     cash: "నగదు",
     online: "ఆన్‌లైన్",
     rank: "స్థానం",
-    search: "పేరు వెతకండి...",
+    search: "పేరు, మారుపేరు లేదా తండ్రి పేరు వెతకండి...",
     sortBy: "క్రమబద్ధీకరించు",
     dateNewest: "తేదీ (కొత్తవి ముందు)",
     dateOldest: "తేదీ (పాతవి ముందు)",
@@ -119,6 +141,22 @@ export const translations = {
     next: "తదుపరి",
     page: "పేజీ",
     of: "లో",
+    progressTitle: "నిర్మాణ పురోగతి",
+    noPhotos: "ఇంకా ఫోటోలు అప్‌లోడ్ చేయలేదు",
+    uploadPhoto: "పురోగతి ఫోటో అప్‌లోడ్ చేయండి",
+    photoTitleEn: "శీర్షిక (ఇంగ్లీష్)",
+    photoTitleTe: "శీర్షిక (తెలుగు)",
+    chooseImage: "చిత్రాన్ని ఎంచుకోండి",
+    uploading: "అప్‌లోడ్ అవుతోంది...",
+    uploadSuccess: "ఫోటో విజయవంతంగా అప్‌లోడ్ అయింది!",
+    deleteConfirm: "ఈ ఫోటోను తొలగించాలనుకుంటున్నారా?",
+    viewGallery: "గ్యాలరీ చూడండి",
+    titleRequired: "శీర్షిక అవసరం",
+    imageRequired: "దయచేసి చిత్రాన్ని ఎంచుకోండి",
+    uploadFailed: "ఫోటో అప్‌లోడ్ విఫలమైంది",
+    close: "మూసివేయి",
+    previousPhoto: "మునుపటి",
+    nextPhoto: "తదుపరి",
   },
 } as const;
 
@@ -153,12 +191,28 @@ export function todayInputDate(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** Public donation record (no admin notes) */
 export interface Donation {
   id: number;
   name: string;
+  aliasName: string;
   fatherName: string;
   amount: number;
   donationDate: string;
   paymentMode: PaymentMode;
   createdAt: string;
+}
+
+/** Full record for admin dashboard */
+export interface AdminDonation extends Donation {
+  notes: string;
+}
+
+export interface ProgressImage {
+  id: number;
+  title: string;
+  titleTe: string;
+  imageUrl: string;
+  publicId: string;
+  uploadedAt: string;
 }

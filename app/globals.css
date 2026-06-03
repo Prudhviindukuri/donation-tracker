@@ -29,4 +29,17 @@ body {
   .font-telugu {
     font-family: var(--font-telugu), "Noto Sans Telugu", sans-serif;
   }
+
+  .lightbox-fade-in {
+    animation: lightboxFadeIn 0.2s ease-out;
+  }
+
+  @keyframes lightboxFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }

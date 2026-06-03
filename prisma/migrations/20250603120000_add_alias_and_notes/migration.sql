@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Donation" ADD COLUMN "aliasName" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "Donation" ADD COLUMN "notes" TEXT NOT NULL DEFAULT '';

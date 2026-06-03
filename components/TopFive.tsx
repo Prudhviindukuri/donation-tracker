@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
+import { getPublicAliasDisplay } from "@/lib/donation";
 import {
   Donation,
   formatAmount,
@@ -51,6 +52,9 @@ export default function TopFive({ donations }: TopFiveProps) {
                 <th className={`pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`}>
                   {t("donorName")}
                 </th>
+                <th className={`pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`}>
+                  {t("aliasName")}
+                </th>
                 <th className={`pb-3 font-medium ${lang === "te" ? "font-telugu" : ""}`}>
                   {t("amount")}
                 </th>
@@ -81,6 +85,9 @@ export default function TopFive({ donations }: TopFiveProps) {
                           {donation.fatherName}
                         </div>
                       )}
+                    </td>
+                    <td className="py-3 pr-4 text-text/80">
+                      {getPublicAliasDisplay(donation)}
                     </td>
                     <td className="py-3 font-semibold text-saffron">
                       {formatAmount(donation.amount)}

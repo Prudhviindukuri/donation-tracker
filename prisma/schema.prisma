@@ -15,9 +15,20 @@ enum PaymentMode {
 model Donation {
   id           Int         @id @default(autoincrement())
   name         String
+  aliasName    String      @default("")
   fatherName   String      @default("")
+  notes        String      @default("")
   amount       Float
   donationDate DateTime    @default(now())
   paymentMode  PaymentMode @default(CASH)
   createdAt    DateTime    @default(now())
+}
+
+model ProgressImage {
+  id         Int      @id @default(autoincrement())
+  title      String
+  titleTe    String
+  imageUrl   String
+  publicId   String
+  uploadedAt DateTime @default(now())
 }

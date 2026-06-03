@@ -2,7 +2,9 @@ import { PaymentMode } from "@/lib/translations";
 
 export interface DonationPayload {
   name: string;
+  aliasName: string;
   fatherName: string;
+  notes: string;
   amount: number;
   donationDate: Date;
   paymentMode: PaymentMode;
@@ -22,8 +24,11 @@ export function parseDonationPayload(
 
   const record = body as Record<string, unknown>;
   const name = typeof record.name === "string" ? record.name.trim() : "";
+  const aliasName =
+    typeof record.aliasName === "string" ? record.aliasName.trim() : "";
   const fatherName =
     typeof record.fatherName === "string" ? record.fatherName.trim() : "";
+  const notes = typeof record.notes === "string" ? record.notes.trim() : "";
   const amount = Number(record.amount);
   const donationDateRaw =
     typeof record.donationDate === "string" ? record.donationDate.trim() : "";
@@ -51,11 +56,27 @@ export function parseDonationPayload(
   }
 
   return {
-    data: { name, fatherName, amount, donationDate, paymentMode },
+    data: {
+      name,
+      aliasName,
+      fatherName,
+      notes,
+      amount,
+      donationDate,
+      paymentMode,
+    },
   };
 }
 
 export function toInputDate(date: Date | string): string {
   const value = typeof date === "string" ? new Date(date) : date;
   return value.toISOString().slice(0, 10);
+}
+
+/** Public-facing label: alias when set, otherwise donor name */
+export function getPublicAliasDisplay(donation: {
+  name: string;
+  aliasName: string;
+}): string {
+  return donation.aliasName.trim() || "—";
 }

@@ -4,9 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { signOut } from "next-auth/react";
 import AdminEditModal from "@/components/AdminEditModal";
 import AdminForm from "@/components/AdminForm";
+import AdminProgressSection from "@/components/AdminProgressSection";
 import { useLanguage } from "@/components/LanguageProvider";
+import { getPublicAliasDisplay } from "@/lib/donation";
 import {
-  Donation,
+  AdminDonation,
   formatAmount,
   formatDate,
   formatPaymentMode,
@@ -14,14 +16,18 @@ import {
 
 export default function AdminDashboardClient() {
   const { t, lang } = useLanguage();
-  const [donations, setDonations] = useState<Donation[]>([]);
+  const [donations, setDonations] = useState<AdminDonation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingDonation, setEditingDonation] = useState<Donation | null>(null);
+  const [editingDonation, setEditingDonation] = useState<AdminDonation | null>(
+    null
+  );
 
   const fetchDonations = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/donations", { cache: "no-store" });
+      const response = await fetch("/api/admin/donations", {
+        cache: "no-store",
+      });
       if (response.ok) {
         const data = await response.json();
         setDonations(data);
@@ -106,11 +112,13 @@ export default function AdminDashboardClient() {
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[880px] text-left text-sm">
+              <table className="w-full min-w-[1100px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-card-border text-text/70">
                     <th className="pb-3 pr-4 font-medium">{t("donorName")}</th>
+                    <th className="pb-3 pr-4 font-medium">{t("aliasName")}</th>
                     <th className="pb-3 pr-4 font-medium">{t("fatherName")}</th>
+                    <th className="pb-3 pr-4 font-medium">{t("notes")}</th>
                     <th className="pb-3 pr-4 font-medium">{t("amount")}</th>
                     <th className="pb-3 pr-4 font-medium">{t("date")}</th>
                     <th className="pb-3 pr-4 font-medium">{t("paymentMode")}</th>
@@ -127,7 +135,15 @@ export default function AdminDashboardClient() {
                         {donation.name}
                       </td>
                       <td className="py-3 pr-4 text-text/80">
+                        {getPublicAliasDisplay(donation)}
+                      </td>
+                      <td className="py-3 pr-4 text-text/80">
                         {donation.fatherName || "—"}
+                      </td>
+                      <td className="max-w-[200px] py-3 pr-4 text-text/80">
+                        <span className="line-clamp-2 whitespace-pre-wrap">
+                          {donation.notes || "—"}
+                        </span>
                       </td>
                       <td className="py-3 pr-4 font-semibold text-saffron">
                         {formatAmount(donation.amount)}
@@ -163,6 +179,8 @@ export default function AdminDashboardClient() {
             </div>
           )}
         </section>
+
+        <AdminProgressSection />
       </main>
 
       {editingDonation && (

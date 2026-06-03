@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DonationTable from "@/components/DonationTable";
+import ProgressGallery from "@/components/ProgressGallery";
 import LanguageToggle from "@/components/LanguageToggle";
 import LatestFive from "@/components/LatestFive";
 import Logo from "@/components/Logo";
@@ -95,6 +96,10 @@ export default function HomePageClient() {
             <DonationTable donations={donations} />
           </div>
         )}
+
+        <div className="mt-6">
+          <ProgressGallery />
+        </div>
       </main>
 
       <footer className="border-t border-card-border bg-white py-8">

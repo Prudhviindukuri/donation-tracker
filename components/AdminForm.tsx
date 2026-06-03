@@ -14,7 +14,9 @@ const inputClassName =
 export default function AdminForm({ onSuccess }: AdminFormProps) {
   const { t, lang } = useLanguage();
   const [name, setName] = useState("");
+  const [aliasName, setAliasName] = useState("");
   const [fatherName, setFatherName] = useState("");
+  const [notes, setNotes] = useState("");
   const [amount, setAmount] = useState("");
   const [donationDate, setDonationDate] = useState(todayInputDate());
   const [paymentMode, setPaymentMode] = useState<PaymentMode>("CASH");
@@ -55,7 +57,9 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: trimmedName,
+          aliasName: aliasName.trim(),
           fatherName: fatherName.trim(),
+          notes: notes.trim(),
           amount: parsedAmount,
           donationDate,
           paymentMode,
@@ -68,7 +72,9 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
       }
 
       setName("");
+      setAliasName("");
       setFatherName("");
+      setNotes("");
       setAmount("");
       setDonationDate(todayInputDate());
       setPaymentMode("CASH");
@@ -105,6 +111,19 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
         </div>
 
         <div>
+          <label htmlFor="alias-name" className={labelClass}>
+            {t("aliasName")}
+          </label>
+          <input
+            id="alias-name"
+            type="text"
+            value={aliasName}
+            onChange={(e) => setAliasName(e.target.value)}
+            className={inputClassName}
+          />
+        </div>
+
+        <div>
           <label htmlFor="father-name" className={labelClass}>
             {t("fatherName")}
           </label>
@@ -116,6 +135,20 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
             className={inputClassName}
           />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="donation-notes" className={labelClass}>
+          {t("notes")}
+        </label>
+        <textarea
+          id="donation-notes"
+          rows={3}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder={t("notesPlaceholder")}
+          className={inputClassName}
+        />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
