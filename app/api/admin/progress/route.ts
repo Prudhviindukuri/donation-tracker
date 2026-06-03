@@ -9,6 +9,10 @@ export const runtime = "nodejs";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
+function formFieldString(value: FormDataEntryValue | null): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
 
@@ -19,9 +23,8 @@ export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("image");
-    const title = typeof formData.get("title") === "string" ? formData.get("title")!.trim() : "";
-    const titleTe =
-      typeof formData.get("titleTe") === "string" ? formData.get("titleTe")!.trim() : "";
+    const title = formFieldString(formData.get("title"));
+    const titleTe = formFieldString(formData.get("titleTe"));
 
     if (!title || !titleTe) {
       return NextResponse.json(
