@@ -11,8 +11,11 @@ export async function GET() {
       select: {
         id: true,
         name: true,
+        nameTe: true,
         aliasName: true,
+        aliasNameTe: true,
         fatherName: true,
+        fatherNameTe: true,
         amount: true,
         donationDate: true,
         paymentMode: true,

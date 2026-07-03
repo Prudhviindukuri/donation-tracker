@@ -1,4 +1,4 @@
-import { PaymentMode } from "@/lib/translations";
+import { PaymentMode, Language } from "@/lib/translations";
 
 export interface DonationPayload {
   name: string;
@@ -73,10 +73,61 @@ export function toInputDate(date: Date | string): string {
   return value.toISOString().slice(0, 10);
 }
 
-/** Public-facing label: alias when set, otherwise donor name */
-export function getPublicAliasDisplay(donation: {
-  name: string;
-  aliasName: string;
-}): string {
-  return donation.aliasName.trim() || "—";
+export function localizedField(
+  en: string,
+  te: string,
+  lang: Language
+): string {
+  if (lang === "te" && te.trim()) return te.trim();
+  return en.trim();
+}
+
+export function getLocalizedDonorName(
+  donation: { name: string; nameTe: string },
+  lang: Language
+): string {
+  return localizedField(donation.name, donation.nameTe, lang);
+}
+
+export function getLocalizedFatherName(
+  donation: { fatherName: string; fatherNameTe: string },
+  lang: Language
+): string {
+  return localizedField(donation.fatherName, donation.fatherNameTe, lang);
+}
+
+/** Public-facing alias: localized alias when set, otherwise em dash */
+export function getPublicAliasDisplay(
+  donation: { aliasName: string; aliasNameTe: string },
+  lang: Language
+): string {
+  const localized = localizedField(donation.aliasName, donation.aliasNameTe, lang);
+  return localized || "—";
+}
+
+export function donationMatchesSearch(
+  donation: {
+    name: string;
+    nameTe: string;
+    aliasName: string;
+    aliasNameTe: string;
+    fatherName: string;
+    fatherNameTe: string;
+  },
+  query: string
+): boolean {
+  if (!query) return true;
+
+  const haystack = [
+    donation.name,
+    donation.nameTe,
+    donation.aliasName,
+    donation.aliasNameTe,
+    donation.fatherName,
+    donation.fatherNameTe,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(query);
 }

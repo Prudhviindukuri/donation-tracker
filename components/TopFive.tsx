@@ -2,7 +2,11 @@
 
 import { useMemo } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
-import { getPublicAliasDisplay } from "@/lib/donation";
+import {
+  getLocalizedDonorName,
+  getLocalizedFatherName,
+  getPublicAliasDisplay,
+} from "@/lib/donation";
 import {
   Donation,
   formatAmount,
@@ -26,6 +30,8 @@ export default function TopFive({ donations }: TopFiveProps) {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
   }, [donations]);
+
+  const nameCellClass = lang === "te" ? "font-telugu" : "";
 
   return (
     <section className="card">
@@ -78,16 +84,16 @@ export default function TopFive({ donations }: TopFiveProps) {
                         #{rank}
                       </span>
                     </td>
-                    <td className="py-3 pr-4 font-medium text-text">
-                      <div>{donation.name}</div>
-                      {donation.fatherName && (
-                        <div className="text-xs text-text/60">
-                          {donation.fatherName}
+                    <td className={`py-3 pr-4 font-medium text-text ${nameCellClass}`}>
+                      <div>{getLocalizedDonorName(donation, lang)}</div>
+                      {getLocalizedFatherName(donation, lang) && (
+                        <div className={`text-xs text-text/60 ${nameCellClass}`}>
+                          {getLocalizedFatherName(donation, lang)}
                         </div>
                       )}
                     </td>
-                    <td className="py-3 pr-4 text-text/80">
-                      {getPublicAliasDisplay(donation)}
+                    <td className={`py-3 pr-4 text-text/80 ${nameCellClass}`}>
+                      {getPublicAliasDisplay(donation, lang)}
                     </td>
                     <td className="py-3 font-semibold text-saffron">
                       {formatAmount(donation.amount)}

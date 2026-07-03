@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Donation" ADD COLUMN "nameTe" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "Donation" ADD COLUMN "aliasNameTe" TEXT NOT NULL DEFAULT '';
+ALTER TABLE "Donation" ADD COLUMN "fatherNameTe" TEXT NOT NULL DEFAULT '';

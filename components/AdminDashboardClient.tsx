@@ -6,7 +6,6 @@ import AdminEditModal from "@/components/AdminEditModal";
 import AdminForm from "@/components/AdminForm";
 import AdminProgressSection from "@/components/AdminProgressSection";
 import { useLanguage } from "@/components/LanguageProvider";
-import { getPublicAliasDisplay } from "@/lib/donation";
 import {
   AdminDonation,
   formatAmount,
@@ -132,13 +131,28 @@ export default function AdminDashboardClient() {
                       className="border-b border-card-border/60 last:border-0"
                     >
                       <td className="py-3 pr-4 font-medium text-text">
-                        {donation.name}
+                        <div>{donation.name}</div>
+                        {donation.nameTe && (
+                          <div className="font-telugu text-xs text-text/60">
+                            {donation.nameTe}
+                          </div>
+                        )}
                       </td>
                       <td className="py-3 pr-4 text-text/80">
-                        {getPublicAliasDisplay(donation)}
+                        <div>{donation.aliasName || "—"}</div>
+                        {donation.aliasNameTe && (
+                          <div className="font-telugu text-xs text-text/60">
+                            {donation.aliasNameTe}
+                          </div>
+                        )}
                       </td>
                       <td className="py-3 pr-4 text-text/80">
-                        {donation.fatherName || "—"}
+                        <div>{donation.fatherName || "—"}</div>
+                        {donation.fatherNameTe && (
+                          <div className="font-telugu text-xs text-text/60">
+                            {donation.fatherNameTe}
+                          </div>
+                        )}
                       </td>
                       <td className="max-w-[200px] py-3 pr-4 text-text/80">
                         <span className="line-clamp-2 whitespace-pre-wrap">

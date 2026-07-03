@@ -15,8 +15,11 @@ enum PaymentMode {
 model Donation {
   id           Int         @id @default(autoincrement())
   name         String
+  nameTe       String      @default("")
   aliasName    String      @default("")
+  aliasNameTe  String      @default("")
   fatherName   String      @default("")
+  fatherNameTe String      @default("")
   notes        String      @default("")
   amount       Float
   donationDate DateTime    @default(now())

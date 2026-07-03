@@ -195,8 +195,11 @@ export function todayInputDate(): string {
 export interface Donation {
   id: number;
   name: string;
+  nameTe: string;
   aliasName: string;
+  aliasNameTe: string;
   fatherName: string;
+  fatherNameTe: string;
   amount: number;
   donationDate: string;
   paymentMode: PaymentMode;

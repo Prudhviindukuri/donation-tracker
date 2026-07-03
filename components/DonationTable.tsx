@@ -2,7 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/components/LanguageProvider";
-import { getPublicAliasDisplay } from "@/lib/donation";
+import {
+  donationMatchesSearch,
+  getLocalizedDonorName,
+  getLocalizedFatherName,
+  getPublicAliasDisplay,
+} from "@/lib/donation";
 import {
   Donation,
   formatAmount,
@@ -102,11 +107,7 @@ export default function DonationTable({ donations }: DonationTableProps) {
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return donations.filter((donation) => {
-      const matchesSearch =
-        !query ||
-        donation.name.toLowerCase().includes(query) ||
-        donation.aliasName.toLowerCase().includes(query) ||
-        donation.fatherName.toLowerCase().includes(query);
+      const matchesSearch = donationMatchesSearch(donation, query);
       const matchesBucket = matchesAmountBucket(donation.amount, amountBucket);
       return matchesSearch && matchesBucket;
     });
@@ -162,6 +163,7 @@ export default function DonationTable({ donations }: DonationTableProps) {
   };
 
   const thClass = `px-4 py-3 ${lang === "te" ? "font-telugu" : ""}`;
+  const nameCellClass = lang === "te" ? "font-telugu" : "";
   const controlClass = `rounded-lg border border-card-border bg-ivory px-4 py-2 text-sm text-text outline-none focus:border-saffron ${
     lang === "te" ? "font-telugu" : ""
   }`;
@@ -259,14 +261,14 @@ export default function DonationTable({ donations }: DonationTableProps) {
                     <td className="px-4 py-3 text-text/70">
                       {(currentPage - 1) * PAGE_SIZE + index + 1}
                     </td>
-                    <td className="px-4 py-3 font-medium text-text">
-                      {donation.name}
+                    <td className={`px-4 py-3 font-medium text-text ${nameCellClass}`}>
+                      {getLocalizedDonorName(donation, lang)}
                     </td>
-                    <td className="px-4 py-3 text-text/80">
-                      {getPublicAliasDisplay(donation)}
+                    <td className={`px-4 py-3 text-text/80 ${nameCellClass}`}>
+                      {getPublicAliasDisplay(donation, lang)}
                     </td>
-                    <td className="px-4 py-3 text-text/80">
-                      {donation.fatherName || "—"}
+                    <td className={`px-4 py-3 text-text/80 ${nameCellClass}`}>
+                      {getLocalizedFatherName(donation, lang) || "—"}
                     </td>
                     <td className="px-4 py-3 font-semibold text-saffron">
                       {formatAmount(donation.amount)}

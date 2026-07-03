@@ -1,7 +1,11 @@
 "use client";
 
 import { useLanguage } from "@/components/LanguageProvider";
-import { getPublicAliasDisplay } from "@/lib/donation";
+import {
+  getLocalizedDonorName,
+  getLocalizedFatherName,
+  getPublicAliasDisplay,
+} from "@/lib/donation";
 import {
   Donation,
   formatAmount,
@@ -17,6 +21,7 @@ export default function LatestFive({ donations }: LatestFiveProps) {
   const { t, lang } = useLanguage();
   const latest = donations.slice(0, 5);
   const thClass = `pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`;
+  const nameCellClass = lang === "te" ? "font-telugu" : "";
 
   return (
     <section className="card">
@@ -57,14 +62,14 @@ export default function LatestFive({ donations }: LatestFiveProps) {
                       : ""
                   }`}
                 >
-                  <td className="py-3 pr-4 font-medium text-text">
-                    {donation.name}
+                  <td className={`py-3 pr-4 font-medium text-text ${nameCellClass}`}>
+                    {getLocalizedDonorName(donation, lang)}
                   </td>
-                  <td className="py-3 pr-4 text-text/80">
-                    {getPublicAliasDisplay(donation)}
+                  <td className={`py-3 pr-4 text-text/80 ${nameCellClass}`}>
+                    {getPublicAliasDisplay(donation, lang)}
                   </td>
-                  <td className="py-3 pr-4 text-text/80">
-                    {donation.fatherName || "—"}
+                  <td className={`py-3 pr-4 text-text/80 ${nameCellClass}`}>
+                    {getLocalizedFatherName(donation, lang) || "—"}
                   </td>
                   <td className="py-3 pr-4 font-semibold text-saffron">
                     {formatAmount(donation.amount)}
