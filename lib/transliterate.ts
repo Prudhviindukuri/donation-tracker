@@ -6,6 +6,29 @@ function isTeluguScript(text: string): boolean {
   return TELUGU_SCRIPT.test(text);
 }
 
+/** Prepare casual English/Roman spelling for ISO → Telugu (e.g. Raju → Rāju) */
+function normalizeRomanWord(word: string): string {
+  let normalized = word.trim();
+  if (!normalized) return normalized;
+
+  normalized = normalized
+    .replace(/aa/gi, "ā")
+    .replace(/ee/gi, "ī")
+    .replace(/oo/gi, "ū")
+    .replace(/ii/gi, "ī");
+
+  if (/^rao$/i.test(normalized)) {
+    return normalized[0] === "R" ? "Rāvu" : "rāvu";
+  }
+
+  const raPrefix = normalized.match(/^([Rr])a([\s\S]*)$/);
+  if (raPrefix && !/^([Rr])ā/.test(normalized)) {
+    return `${raPrefix[1]}ā${raPrefix[2]}`;
+  }
+
+  return normalized;
+}
+
 /** Roman (ISO 15919) → Telugu script; passthrough if already Telugu */
 export function toTelugu(text: string): string {
   const trimmed = text.trim();
@@ -17,7 +40,7 @@ export function toTelugu(text: string): string {
 
   return trimmed
     .split(/\s+/)
-    .map((word) => Sanscript.t(word, "iso", "telugu"))
+    .map((word) => Sanscript.t(normalizeRomanWord(word), "iso", "telugu"))
     .join(" ");
 }
 
