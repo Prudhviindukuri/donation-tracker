@@ -1,8 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useLanguage } from "@/components/LanguageProvider";
+import { useAdminLanguage } from "@/components/AdminLanguageProvider";
 import { toInputDate } from "@/lib/donation";
+import { fetchTeluguPreview } from "@/lib/fetch-telugu-preview";
 import { AdminDonation, PaymentMode } from "@/lib/translations";
 
 interface AdminEditModalProps {
@@ -19,10 +20,13 @@ export default function AdminEditModal({
   onClose,
   onSuccess,
 }: AdminEditModalProps) {
-  const { t, lang } = useLanguage();
+  const { t, lang } = useAdminLanguage();
   const [name, setName] = useState(donation.name);
+  const [nameTe, setNameTe] = useState(donation.nameTe);
   const [aliasName, setAliasName] = useState(donation.aliasName);
+  const [aliasNameTe, setAliasNameTe] = useState(donation.aliasNameTe);
   const [fatherName, setFatherName] = useState(donation.fatherName);
+  const [fatherNameTe, setFatherNameTe] = useState(donation.fatherNameTe);
   const [notes, setNotes] = useState(donation.notes);
   const [amount, setAmount] = useState(String(donation.amount));
   const [donationDate, setDonationDate] = useState(
@@ -34,10 +38,21 @@ export default function AdminEditModal({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const fillTeluguPreview = async (
+    english: string,
+    setter: (value: string) => void
+  ) => {
+    const preview = await fetchTeluguPreview(english);
+    if (preview) setter(preview);
+  };
+
   useEffect(() => {
     setName(donation.name);
+    setNameTe(donation.nameTe);
     setAliasName(donation.aliasName);
+    setAliasNameTe(donation.aliasNameTe);
     setFatherName(donation.fatherName);
+    setFatherNameTe(donation.fatherNameTe);
     setNotes(donation.notes);
     setAmount(String(donation.amount));
     setDonationDate(toInputDate(donation.donationDate));
@@ -45,9 +60,17 @@ export default function AdminEditModal({
     setError("");
   }, [donation]);
 
+  useEffect(() => {
+    void fillTeluguPreview(donation.name, setNameTe);
+    if (donation.aliasName) void fillTeluguPreview(donation.aliasName, setAliasNameTe);
+    if (donation.fatherName) void fillTeluguPreview(donation.fatherName, setFatherNameTe);
+  }, [donation]);
+
   const labelClass = `mb-1 block text-sm font-medium text-text ${
     lang === "te" ? "font-telugu" : ""
   }`;
+
+  const teluguInputClass = `${inputClassName} font-telugu`;
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -80,8 +103,11 @@ export default function AdminEditModal({
         body: JSON.stringify({
           id: donation.id,
           name: trimmedName,
+          nameTe: nameTe.trim(),
           aliasName: aliasName.trim(),
+          aliasNameTe: aliasNameTe.trim(),
           fatherName: fatherName.trim(),
+          fatherNameTe: fatherNameTe.trim(),
           notes: notes.trim(),
           amount: parsedAmount,
           donationDate,
@@ -109,7 +135,7 @@ export default function AdminEditModal({
       onClick={onClose}
     >
       <div
-        className="card max-h-[90vh] w-full max-w-lg overflow-y-auto"
+        className="card max-h-[90vh] w-full max-w-2xl overflow-y-auto"
         onClick={(event) => event.stopPropagation()}
       >
         <h2
@@ -121,43 +147,91 @@ export default function AdminEditModal({
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="edit-donor-name" className={labelClass}>
-              {t("donorName")}
-            </label>
-            <input
-              id="edit-donor-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className={inputClassName}
-            />
-          </div>
+          <p className={`text-xs text-text/60 ${lang === "te" ? "font-telugu" : ""}`}>
+            {t("teluguHint")}
+          </p>
 
-          <div>
-            <label htmlFor="edit-alias-name" className={labelClass}>
-              {t("aliasName")}
-            </label>
-            <input
-              id="edit-alias-name"
-              type="text"
-              value={aliasName}
-              onChange={(e) => setAliasName(e.target.value)}
-              className={inputClassName}
-            />
-          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="edit-donor-name" className={labelClass}>
+                {t("donorName")}
+              </label>
+              <input
+                id="edit-donor-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onBlur={() => fillTeluguPreview(name, setNameTe)}
+                className={inputClassName}
+              />
+            </div>
 
-          <div>
-            <label htmlFor="edit-father-name" className={labelClass}>
-              {t("fatherName")}
-            </label>
-            <input
-              id="edit-father-name"
-              type="text"
-              value={fatherName}
-              onChange={(e) => setFatherName(e.target.value)}
-              className={inputClassName}
-            />
+            <div>
+              <label htmlFor="edit-donor-name-te" className={labelClass}>
+                {t("donorNameTe")}
+              </label>
+              <input
+                id="edit-donor-name-te"
+                type="text"
+                value={nameTe}
+                onChange={(e) => setNameTe(e.target.value)}
+                className={teluguInputClass}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-alias-name" className={labelClass}>
+                {t("aliasName")}
+              </label>
+              <input
+                id="edit-alias-name"
+                type="text"
+                value={aliasName}
+                onChange={(e) => setAliasName(e.target.value)}
+                onBlur={() => fillTeluguPreview(aliasName, setAliasNameTe)}
+                className={inputClassName}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-alias-name-te" className={labelClass}>
+                {t("aliasNameTe")}
+              </label>
+              <input
+                id="edit-alias-name-te"
+                type="text"
+                value={aliasNameTe}
+                onChange={(e) => setAliasNameTe(e.target.value)}
+                className={teluguInputClass}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-father-name" className={labelClass}>
+                {t("fatherName")}
+              </label>
+              <input
+                id="edit-father-name"
+                type="text"
+                value={fatherName}
+                onChange={(e) => setFatherName(e.target.value)}
+                onBlur={() => fillTeluguPreview(fatherName, setFatherNameTe)}
+                className={inputClassName}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="edit-father-name-te" className={labelClass}>
+                {t("fatherNameTe")}
+              </label>
+              <input
+                id="edit-father-name-te"
+                type="text"
+                value={fatherNameTe}
+                onChange={(e) => setFatherNameTe(e.target.value)}
+                className={teluguInputClass}
+              />
+            </div>
           </div>
 
           <div>

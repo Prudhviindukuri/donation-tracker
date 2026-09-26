@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { parseDonationPayload } from "@/lib/donation";
 import { prisma } from "@/lib/prisma";
-import { withTeluguNames } from "@/lib/transliterate";
+import { buildDonationData } from "@/lib/transliterate";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const donation = await prisma.donation.create({
-      data: withTeluguNames(parsed.data),
+      data: await buildDonationData(parsed.data),
     });
 
     return NextResponse.json(donation, { status: 201 });

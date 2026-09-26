@@ -21,7 +21,7 @@ export default function LatestFive({ donations }: LatestFiveProps) {
   const { t, lang } = useLanguage();
   const latest = donations.slice(0, 5);
   const thClass = `pb-3 pr-4 font-medium ${lang === "te" ? "font-telugu" : ""}`;
-  const nameCellClass = lang === "te" ? "font-telugu" : "";
+  const nameCellClass = `min-w-[140px] max-w-[240px] whitespace-normal break-words leading-relaxed ${lang === "te" ? "font-telugu" : ""}`;
 
   return (
     <section className="card">
@@ -39,7 +39,7 @@ export default function LatestFive({ donations }: LatestFiveProps) {
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left text-sm">
+          <table className="w-full min-w-[900px] text-left text-sm table-fixed">
             <thead>
               <tr className="border-b border-card-border text-text/70">
                 <th className={thClass}>{t("donorName")}</th>

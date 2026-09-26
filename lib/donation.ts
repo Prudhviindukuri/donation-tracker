@@ -4,6 +4,9 @@ export interface DonationPayload {
   name: string;
   aliasName: string;
   fatherName: string;
+  nameTe?: string;
+  aliasNameTe?: string;
+  fatherNameTe?: string;
   notes: string;
   amount: number;
   donationDate: Date;
@@ -28,6 +31,11 @@ export function parseDonationPayload(
     typeof record.aliasName === "string" ? record.aliasName.trim() : "";
   const fatherName =
     typeof record.fatherName === "string" ? record.fatherName.trim() : "";
+  const nameTe = typeof record.nameTe === "string" ? record.nameTe.trim() : "";
+  const aliasNameTe =
+    typeof record.aliasNameTe === "string" ? record.aliasNameTe.trim() : "";
+  const fatherNameTe =
+    typeof record.fatherNameTe === "string" ? record.fatherNameTe.trim() : "";
   const notes = typeof record.notes === "string" ? record.notes.trim() : "";
   const amount = Number(record.amount);
   const donationDateRaw =
@@ -60,6 +68,9 @@ export function parseDonationPayload(
       name,
       aliasName,
       fatherName,
+      nameTe,
+      aliasNameTe,
+      fatherNameTe,
       notes,
       amount,
       donationDate,

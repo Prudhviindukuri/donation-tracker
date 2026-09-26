@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import AdminProgressForm from "@/components/AdminProgressForm";
-import { useLanguage } from "@/components/LanguageProvider";
+import { useAdminLanguage } from "@/components/AdminLanguageProvider";
 import { ProgressImage, formatDate } from "@/lib/translations";
 
 export default function AdminProgressSection() {
-  const { t, lang } = useLanguage();
+  const { t, lang } = useAdminLanguage();
   const [images, setImages] = useState<ProgressImage[]>([]);
   const [loading, setLoading] = useState(true);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useRef, useState } from "react";
-import { useLanguage } from "@/components/LanguageProvider";
+import { useAdminLanguage } from "@/components/AdminLanguageProvider";
 
 interface AdminProgressFormProps {
   onSuccess: () => void;
@@ -11,7 +11,7 @@ const inputClassName =
   "w-full rounded-lg border border-card-border bg-ivory px-4 py-2 text-text outline-none focus:border-saffron";
 
 export default function AdminProgressForm({ onSuccess }: AdminProgressFormProps) {
-  const { t, lang } = useLanguage();
+  const { t, lang } = useAdminLanguage();
   const [title, setTitle] = useState("");
   const [titleTe, setTitleTe] = useState("");
   const [preview, setPreview] = useState<string | null>(null);

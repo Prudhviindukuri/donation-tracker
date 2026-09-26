@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useLanguage } from "@/components/LanguageProvider";
+import { useAdminLanguage } from "@/components/AdminLanguageProvider";
+import { fetchTeluguPreview } from "@/lib/fetch-telugu-preview";
 import { PaymentMode, todayInputDate } from "@/lib/translations";
 
 interface AdminFormProps {
@@ -12,10 +13,13 @@ const inputClassName =
   "w-full rounded-lg border border-card-border bg-ivory px-4 py-2 text-text outline-none focus:border-saffron";
 
 export default function AdminForm({ onSuccess }: AdminFormProps) {
-  const { t, lang } = useLanguage();
+  const { t, lang } = useAdminLanguage();
   const [name, setName] = useState("");
+  const [nameTe, setNameTe] = useState("");
   const [aliasName, setAliasName] = useState("");
+  const [aliasNameTe, setAliasNameTe] = useState("");
   const [fatherName, setFatherName] = useState("");
+  const [fatherNameTe, setFatherNameTe] = useState("");
   const [notes, setNotes] = useState("");
   const [amount, setAmount] = useState("");
   const [donationDate, setDonationDate] = useState(todayInputDate());
@@ -26,6 +30,16 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
   const labelClass = `mb-1 block text-sm font-medium text-text ${
     lang === "te" ? "font-telugu" : ""
   }`;
+
+  const teluguInputClass = `${inputClassName} font-telugu`;
+
+  const fillTeluguPreview = async (
+    english: string,
+    setter: (value: string) => void
+  ) => {
+    const preview = await fetchTeluguPreview(english);
+    if (preview) setter(preview);
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -57,8 +71,11 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: trimmedName,
+          nameTe: nameTe.trim(),
           aliasName: aliasName.trim(),
+          aliasNameTe: aliasNameTe.trim(),
           fatherName: fatherName.trim(),
+          fatherNameTe: fatherNameTe.trim(),
           notes: notes.trim(),
           amount: parsedAmount,
           donationDate,
@@ -72,8 +89,11 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
       }
 
       setName("");
+      setNameTe("");
       setAliasName("");
+      setAliasNameTe("");
       setFatherName("");
+      setFatherNameTe("");
       setNotes("");
       setAmount("");
       setDonationDate(todayInputDate());
@@ -96,6 +116,10 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
         {t("addDonation")}
       </h2>
 
+      <p className={`text-xs text-text/60 ${lang === "te" ? "font-telugu" : ""}`}>
+        {t("teluguHint")}
+      </p>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="donor-name" className={labelClass}>
@@ -106,7 +130,21 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onBlur={() => fillTeluguPreview(name, setNameTe)}
             className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="donor-name-te" className={labelClass}>
+            {t("donorNameTe")}
+          </label>
+          <input
+            id="donor-name-te"
+            type="text"
+            value={nameTe}
+            onChange={(e) => setNameTe(e.target.value)}
+            className={teluguInputClass}
           />
         </div>
 
@@ -119,7 +157,21 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
             type="text"
             value={aliasName}
             onChange={(e) => setAliasName(e.target.value)}
+            onBlur={() => fillTeluguPreview(aliasName, setAliasNameTe)}
             className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="alias-name-te" className={labelClass}>
+            {t("aliasNameTe")}
+          </label>
+          <input
+            id="alias-name-te"
+            type="text"
+            value={aliasNameTe}
+            onChange={(e) => setAliasNameTe(e.target.value)}
+            className={teluguInputClass}
           />
         </div>
 
@@ -132,7 +184,21 @@ export default function AdminForm({ onSuccess }: AdminFormProps) {
             type="text"
             value={fatherName}
             onChange={(e) => setFatherName(e.target.value)}
+            onBlur={() => fillTeluguPreview(fatherName, setFatherNameTe)}
             className={inputClassName}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="father-name-te" className={labelClass}>
+            {t("fatherNameTe")}
+          </label>
+          <input
+            id="father-name-te"
+            type="text"
+            value={fatherNameTe}
+            onChange={(e) => setFatherNameTe(e.target.value)}
+            className={teluguInputClass}
           />
         </div>
       </div>

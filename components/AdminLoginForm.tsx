@@ -4,10 +4,11 @@ import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
-import { useLanguage } from "@/components/LanguageProvider";
+import AdminLanguageToggle from "@/components/AdminLanguageToggle";
+import { useAdminLanguage } from "@/components/AdminLanguageProvider";
 
 export default function AdminLoginForm() {
-  const { t, lang } = useLanguage();
+  const { t, lang } = useAdminLanguage();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +38,10 @@ export default function AdminLoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ivory px-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-ivory px-4">
+      <div className="absolute right-4 top-4">
+        <AdminLanguageToggle />
+      </div>
       <form
         onSubmit={handleSubmit}
         className="card w-full max-w-md space-y-5"

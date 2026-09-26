@@ -5,7 +5,8 @@ import { signOut } from "next-auth/react";
 import AdminEditModal from "@/components/AdminEditModal";
 import AdminForm from "@/components/AdminForm";
 import AdminProgressSection from "@/components/AdminProgressSection";
-import { useLanguage } from "@/components/LanguageProvider";
+import AdminLanguageToggle from "@/components/AdminLanguageToggle";
+import { useAdminLanguage } from "@/components/AdminLanguageProvider";
 import {
   AdminDonation,
   formatAmount,
@@ -14,7 +15,7 @@ import {
 } from "@/lib/translations";
 
 export default function AdminDashboardClient() {
-  const { t, lang } = useLanguage();
+  const { t, lang } = useAdminLanguage();
   const [donations, setDonations] = useState<AdminDonation[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingDonation, setEditingDonation] = useState<AdminDonation | null>(
@@ -70,13 +71,16 @@ export default function AdminDashboardClient() {
           >
             {t("dashboard")}
           </h1>
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: "/admin" })}
-            className="rounded-lg border border-card-border px-4 py-2 text-sm text-text transition-colors hover:bg-ivory"
-          >
-            {t("logout")}
-          </button>
+          <div className="flex items-center gap-3">
+            <AdminLanguageToggle />
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/admin" })}
+              className="rounded-lg border border-card-border px-4 py-2 text-sm text-text transition-colors hover:bg-ivory"
+            >
+              {t("logout")}
+            </button>
+          </div>
         </div>
       </header>
 

@@ -163,7 +163,7 @@ export default function DonationTable({ donations }: DonationTableProps) {
   };
 
   const thClass = `px-4 py-3 ${lang === "te" ? "font-telugu" : ""}`;
-  const nameCellClass = lang === "te" ? "font-telugu" : "";
+  const nameCellClass = `min-w-[140px] max-w-[240px] whitespace-normal break-words leading-relaxed ${lang === "te" ? "font-telugu" : ""}`;
   const controlClass = `rounded-lg border border-card-border bg-ivory px-4 py-2 text-sm text-text outline-none focus:border-saffron ${
     lang === "te" ? "font-telugu" : ""
   }`;

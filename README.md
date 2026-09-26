@@ -44,27 +44,55 @@ Or copy the line from `.env.local` into `.env`.
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret |
+| `GOOGLE_CLOUD_PROJECT_ID` | Google Cloud project ID for Telugu transliteration |
+| `GOOGLE_CLOUD_SERVICE_ACCOUNT_JSON` | Service account JSON (single line) with Cloud Translation access |
 
-### 3. Create Neon database
+### 3. Google Cloud transliteration (Telugu names)
+
+Admin English names are auto-converted to Telugu script via the **Google Cloud Translation API** (`en` → `te`). Free tier covers ~500K characters/month — enough for 1000+ donor names.
+
+1. Create a project at [console.cloud.google.com](https://console.cloud.google.com)
+2. Enable **Cloud Translation API**
+3. Create a service account with **Cloud Translation API User** role
+4. Download the JSON key and minify it to a single line
+5. Add to `.env.local` and `.env`:
+   - `GOOGLE_CLOUD_PROJECT_ID` — your project ID
+   - `GOOGLE_CLOUD_SERVICE_ACCOUNT_JSON` — full JSON key as one line
+
+Local alternative: set `GOOGLE_APPLICATION_CREDENTIALS` to the key file path instead of the JSON env var.
+
+Verify the credentials work:
+
+```bash
+npx tsx scripts/test-transliterate.ts
+```
+
+After changing the engine, re-run transliteration for existing rows:
+
+```bash
+npx tsx scripts/backfill-telugu-names.ts
+```
+
+### 4. Create Neon database
 
 1. Sign up at [neon.tech](https://neon.tech)
 2. Create a new project and database
 3. Copy the connection string into `DATABASE_URL` in `.env.local`
 
-### 4. Cloudinary (progress photo gallery)
+### 5. Cloudinary (progress photo gallery)
 
 1. Create a free account at [cloudinary.com](https://cloudinary.com)
 2. Copy Cloud Name, API Key, and API Secret from the dashboard
 3. Add them to `.env.local` and `.env` (for local uploads)
 
-### 5. Run database migration
+### 6. Run database migration
 
 ```bash
 npx prisma migrate dev --name init
 npx prisma migrate dev --name add_progress_images
 ```
 
-### 6. Start development server
+### 7. Start development server
 
 ```bash
 npm run dev
